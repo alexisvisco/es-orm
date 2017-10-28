@@ -1,0 +1,20 @@
+group 'es-orm'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin:'application'
+mainClassName = "TestClass"
+
+sourceCompatibility = 1.8
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'com.mashape.unirest:unirest-java:1.4.9'
+    compile 'org.json:json:20140107'
+    compile 'com.google.code.gson:gson:2.8.2'
+}
