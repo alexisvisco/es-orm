@@ -57,4 +57,8 @@ public class ElasticDto
                 ", _source=" + _source +
                 '}';
     }
+
+    public void setTotal(int total) {
+        this._total = total;
+    }
 }

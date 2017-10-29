@@ -178,6 +178,7 @@ public class ESDriver {
                 jo.remove("_source");
                 ElasticDto elasticDto = gson.fromJson(jo.toString(), ElasticDto.class);
                 elasticDto.setSource(source);
+                elasticDto.setTotal(hits.getInt("total"));
 
                 objects.add(elasticDto);
             });
