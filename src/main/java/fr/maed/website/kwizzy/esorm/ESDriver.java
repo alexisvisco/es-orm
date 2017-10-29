@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
  * Created by alexis on 25/10/17.
  * French author.
  */
-
 public class ESDriver {
 
     private int port;
@@ -144,7 +143,7 @@ public class ESDriver {
      */
     public List<ElasticDto> searchToEsDto(QueryBuilder query) {
         Optional<JSONObject> j = search(query);
-        if (j.isPresent())
+        if (j.isPresent() && j.get().has("hits"))
             return getListFromSearch(j.get());
         return new ArrayList<>();
     }

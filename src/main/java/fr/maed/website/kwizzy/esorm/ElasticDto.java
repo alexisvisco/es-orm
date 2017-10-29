@@ -13,6 +13,7 @@ public class ElasticDto
     private String _type;
     private String _score;
     private String _id;
+    private int _total;
 
     private JSONObject _source;
 
@@ -30,6 +31,8 @@ public class ElasticDto
     {
         return _id;
     }
+
+    public int getTotal() { return _total; }
 
     public <T> T getSource(Class<T> dto) {
         return new Gson().fromJson(_source.toString(), dto);
