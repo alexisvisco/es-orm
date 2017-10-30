@@ -149,7 +149,7 @@ public class ESDriver {
     }
 
     /**
-     * Transform a list of elastictos into a list of <U>
+     * Transform a list of elastictdto into a list of <U>
      *
      * @param query from QueryBuilder class
      * @param dto  your dto to be transformed by gson thanks to the getSource method in elasticdto

@@ -9,7 +9,7 @@ import org.json.JSONObject;
 public class GeoDistance extends Query
 {
 
-    public GeoDistance(String fieldLocation, int distance, double lon, double lat)
+    public GeoDistance(String fieldLocation, int distance, double lat, double lon)
     {
         obj.getJSONObject("geo_distance")
                 .put("distance", distance + "km")
