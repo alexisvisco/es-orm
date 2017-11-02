@@ -1,6 +1,7 @@
 package fr.maed.website.kwizzy.esorm;
 
 import com.google.gson.Gson;
+import fr.maed.website.kwizzy.esorm.util.MultiGetFormat;
 import org.json.JSONObject;
 
 /**
@@ -34,6 +35,8 @@ public class ElasticDto
 
     public int getTotal() { return _total; }
 
+    public String getType() { return _type;}
+
     public <T> T getSource(Class<T> dto) {
         return new Gson().fromJson(_source.toString(), dto);
     }
@@ -44,7 +47,7 @@ public class ElasticDto
 
     public JSONObject toMultiGetFormat()
     {
-        return new JSONObject().put("_index", _index).put("_id", _id).put("_type", _type);
+        return MultiGetFormat.fromElasticDto(this).toJson();
     }
 
     @Override
