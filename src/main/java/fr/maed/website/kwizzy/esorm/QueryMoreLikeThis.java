@@ -37,7 +37,7 @@ public class QueryMoreLikeThis extends QueryBuilder
         jo.put("like", ja);
         m.put("more_like_this", jo);
         if (fields.length > 0)
-            m.put("fields", Arrays.asList(fields));
+            m.getJSONObject("more_like_this").put("fields", Arrays.asList(fields));
     }
 
     public QueryMoreLikeThis(Collection<JSONObject> customDatas, String... fields)
