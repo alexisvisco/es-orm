@@ -31,6 +31,11 @@ public class QueryBuilder
         bool.put("must_not", mustNot);
     }
 
+    protected QueryBuilder(boolean b)
+    {
+        json.put("query", new JSONObject());
+    }
+
     public QueryBuilder setPaginationSetting(int from, int size)
     {
         json.put("from", from);
