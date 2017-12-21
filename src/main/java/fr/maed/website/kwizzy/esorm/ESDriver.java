@@ -218,7 +218,7 @@ public class ESDriver {
      */
     public <U> Optional<U> fromId(String id, Class<U> dto) {
         Optional<JSONObject> j = fromId(id);
-        if (j.isPresent())
+        if (j.isPresent() && !j.get().isNull("_source"))
             return Optional.ofNullable(new Gson().fromJson(j.get().getJSONObject("_source").toString(), dto));
         return Optional.empty();
     }
