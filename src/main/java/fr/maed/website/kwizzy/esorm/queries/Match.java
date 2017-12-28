@@ -27,7 +27,7 @@ public class Match extends Query
     }
 
     @Override
-    void init()
+    public void init()
     {
         obj.put("match", new JSONObject());
     }

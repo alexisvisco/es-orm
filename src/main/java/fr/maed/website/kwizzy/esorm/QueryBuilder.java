@@ -1,8 +1,8 @@
 package fr.maed.website.kwizzy.esorm;
 
+import fr.maed.website.kwizzy.esorm.queries.Bool;
 import fr.maed.website.kwizzy.esorm.queries.Query;
 import fr.maed.website.kwizzy.esorm.queries.Sort;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -12,23 +12,15 @@ import org.json.JSONObject;
 public class QueryBuilder
 {
     private JSONObject json = new JSONObject();
-
-    private JSONArray must = new JSONArray();
-    private JSONArray should = new JSONArray();
-    private JSONArray filter = new JSONArray();
-    private JSONArray mustNot = new JSONArray();
+    private Bool mainBool;
 
     public QueryBuilder()
     {
+        this.mainBool = new Bool();
         JSONObject bool = json
                 .put("query", new JSONObject())
                 .getJSONObject("query")
-                .put("bool", new JSONObject())
-                .getJSONObject("bool");
-        bool.put("must", must);
-        bool.put("should", should);
-        bool.put("filter", filter);
-        bool.put("must_not", mustNot);
+                .put("bool", mainBool.toJson());
     }
 
     protected QueryBuilder(boolean b)
@@ -45,25 +37,25 @@ public class QueryBuilder
 
     public QueryBuilder addMust(Query q)
     {
-        must.put(q.toJson());
+        mainBool.addMust(q);
         return this;
     }
 
     public QueryBuilder addShould(Query q)
     {
-        should.put(q.toJson());
+        mainBool.addShould(q);
         return this;
     }
 
     public QueryBuilder addFilter(Query q)
     {
-        filter.put(q.toJson());
+        mainBool.addFilter(q);
         return this;
     }
 
     public QueryBuilder addMustNot(Query q)
     {
-        mustNot.put(q.toJson());
+        mainBool.addMustNot(q);
         return this;
     }
 

@@ -27,7 +27,7 @@ public class Term extends Query
     }
 
     @Override
-    void init()
+    public void init()
     {
         obj.put("term", new JSONObject());
     }

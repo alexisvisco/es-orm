@@ -18,7 +18,7 @@ public abstract class Query
         init();
     }
 
-    abstract void init();
+    protected abstract void init();
 
     public JSONObject toJson()
     {

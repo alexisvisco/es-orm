@@ -19,7 +19,7 @@ public class Range<T extends Number> extends Query
     }
 
     @Override
-    void init()
+    public void init()
     {
         obj.put("range", new JSONObject());
     }

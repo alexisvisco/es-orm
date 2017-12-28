@@ -51,7 +51,7 @@ public class FullTextSearch extends Query
     }
 
     @Override
-    void init()
+    public void init()
     {
         obj.put("multi_match", new JSONObject());
     }

@@ -17,7 +17,7 @@ public class GeoDistance extends Query
     }
 
     @Override
-    void init()
+    public void init()
     {
         obj.put("geo_distance", new JSONObject());
     }
