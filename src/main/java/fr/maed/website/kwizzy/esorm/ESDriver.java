@@ -16,14 +16,16 @@ import java.util.stream.Collectors;
  * Created by alexis on 25/10/17.
  * French author.
  */
-public class ESDriver {
+public class ESDriver
+{
 
     private int port;
     private String url;
     private String base;
     private String collectionName;
 
-    public ESDriver(int port, String url, String base, String collectionName) {
+    public ESDriver(int port, String url, String base, String collectionName)
+    {
         this.port = port;
         this.url = url;
         this.base = base;
@@ -31,32 +33,50 @@ public class ESDriver {
         updateIndex();
     }
 
-    public int getPort() {
+    public int getPort()
+    {
         return port;
     }
 
-    public String getUrl() {
+    public String getUrl()
+    {
         return url;
     }
 
-    public String getBase() {
+    public String getBase()
+    {
         return base;
     }
 
-    public String getCollectionName() {
+    public String getCollectionName()
+    {
         return collectionName;
     }
 
     /**
      * Update index by adding location propriety to geo_point.
      */
-    private void updateIndex() {
+    private void updateIndex()
+    {
         try {
-            Unirest.put(url + ":" + port + "/" + base)
+            HttpResponse<JsonNode> accept = Unirest.put(url + ":" + port + "/" + base)
                     .header("accept", "application/json")
                     .header("Content-Type", "application/json")
-                    .body("{ \"mappings\":{ \"offers\":{ \"properties\":{ \"location\":{ \"type\":\"geo_point\" } } } } }")
+                    .body("{\n" +
+                                  "  \"mappings\":\n" +
+                                  "  {\n" +
+                                  "    \"" + collectionName + "\":\n" +
+                                  "    {\n" +
+                                  "      \"properties\":\n" +
+                                  "      {\n" +
+                                  "        \"location\": { \"type\":\"geo_point\" },\n" +
+                                  "        \"opened\" : {\"type\": \"date\", \"format\": \"epoch_millis\"}\n" +
+                                  "      }\n" +
+                                  "    }\n" +
+                                  "  }\n" +
+                                  "}")
                     .asJson();
+
         } catch (UnirestException e) {
             e.printStackTrace();
         }
@@ -67,13 +87,14 @@ public class ESDriver {
      *
      * @param document a dto to add.
      */
-    public Optional<JSONObject> addDocument(Object document) {
+    public Optional<JSONObject> addDocument(Object document)
+    {
         try {
             return Optional.ofNullable(Unirest.post(url + ":" + port + "/" + base + "/" + collectionName)
-                    .header("accept", "application/json")
-                    .header("Content-Type", "application/json")
-                    .body(new Gson().toJson(document))
-                    .asJson().getBody().getObject());
+                                               .header("accept", "application/json")
+                                               .header("Content-Type", "application/json")
+                                               .body(new Gson().toJson(document))
+                                               .asJson().getBody().getObject());
         } catch (UnirestException e) {
             e.printStackTrace();
             return Optional.empty();
@@ -81,16 +102,17 @@ public class ESDriver {
     }
 
     /**
-     * Delete to {base}/{document}/_delete with the id, the id is _id of es.
+     * Delete to {base}/{document}/_delete with the id, the id is _id of esOffers.
      *
      * @param id of the document to delete.
      */
-    public Optional<JSONObject> deleteDocument(String id) {
+    public Optional<JSONObject> deleteDocument(String id)
+    {
         try {
             return Optional.ofNullable(Unirest.delete(url + ":" + port + "/" + base + "/" + collectionName + "/" + id)
-                    .header("accept", "application/json")
-                    .header("Content-Type", "application/json")
-                    .asJson().getBody().getObject());
+                                               .header("accept", "application/json")
+                                               .header("Content-Type", "application/json")
+                                               .asJson().getBody().getObject());
         } catch (UnirestException e) {
             e.printStackTrace();
             return Optional.empty();
@@ -102,13 +124,15 @@ public class ESDriver {
      *
      * @param document
      */
-    public Optional<JSONObject> updateDocument(Object document, String id) {
+    public Optional<JSONObject> updateDocument(Object document, String id)
+    {
         try {
             return Optional.ofNullable(Unirest.post(url + ":" + port + "/" + base + "/" + collectionName + "/" + id + "/_update")
-                    .header("accept", "application/json")
-                    .header("Content-Type", "application/json")
-                    .body(new JSONObject().put("doc", new JSONObject(new Gson().toJson(document))))
-                    .asJson().getBody().getObject());
+                                               .header("accept", "application/json")
+                                               .header("Content-Type", "application/json")
+                                               .body(new JSONObject().put("doc", new JSONObject(new Gson().toJson(document))))
+                                               .asJson().getBody().getObject());
+
         } catch (UnirestException e) {
             e.printStackTrace();
             return Optional.empty();
@@ -121,7 +145,8 @@ public class ESDriver {
      * @param query query builder
      * @return full json query returned by elasticsearch.
      */
-    public Optional<JSONObject> search(QueryBuilder query) {
+    public Optional<JSONObject> search(QueryBuilder query)
+    {
         try {
             HttpResponse<JsonNode> returned = Unirest.post(url + ":" + port + "/" + base + "/" + collectionName + "/_search")
                     .header("accept", "application/json")
@@ -135,13 +160,30 @@ public class ESDriver {
         }
     }
 
+    public Optional<JSONObject> deleteQuery(QueryBuilder query)
+    {
+        try {
+            HttpResponse<JsonNode> returned = Unirest.post(url + ":" + port + "/" + base + "/" + collectionName + "/_delete_by_query")
+                    .header("accept", "application/json")
+                    .header("Content-Type", "application/json")
+                    .body(query.getJson())
+                    .asJson();
+            return Optional.ofNullable(returned.getBody().getObject());
+        } catch (UnirestException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+
     /**
      * Return the result from elasticsearch request in a list of ElasticDto object
      *
      * @param query from QueryBuilder class
      * @return a list of ElasticDto
      */
-    public List<ElasticDto> searchToEsDto(QueryBuilder query) {
+    public List<ElasticDto> searchToEsDto(QueryBuilder query)
+    {
         Optional<JSONObject> j = search(query);
         if (j.isPresent() && j.get().has("hits"))
             return getListFromSearch(j.get());
@@ -152,11 +194,12 @@ public class ESDriver {
      * Transform a list of elastictdto into a list of <U>
      *
      * @param query from QueryBuilder class
-     * @param dto  your dto to be transformed by gson thanks to the getSource method in elasticdto
-     * @param <U> mapped by the dto class (dto parameter)
+     * @param dto   your dto to be transformed by gson thanks to the getSource method in elasticdto
+     * @param <U>   mapped by the dto class (dto parameter)
      * @return a list of <U> dto.
      */
-    public <U> List<U> searchToDtos(QueryBuilder query, Class<U> dto) {
+    public <U> List<U> searchToDtos(QueryBuilder query, Class<U> dto)
+    {
         return searchToEsDto(query).stream().map(e -> e.getSource(dto)).collect(Collectors.toList());
     }
 
@@ -167,7 +210,8 @@ public class ESDriver {
      * @param fromExecutedQuery from query builder
      * @return a list of dto
      */
-    private List<ElasticDto> getListFromSearch(JSONObject fromExecutedQuery) {
+    private List<ElasticDto> getListFromSearch(JSONObject fromExecutedQuery)
+    {
         Gson gson = new Gson();
         JSONObject hits = fromExecutedQuery.getJSONObject("hits");
         if (hits.getInt("total") > 0) {
@@ -194,7 +238,8 @@ public class ESDriver {
      * @param id of the document get by field _id on elasticsearch
      * @return json returned by elasticsearch.
      */
-    public Optional<JSONObject> fromId(String id) {
+    public Optional<JSONObject> fromId(String id)
+    {
         try {
             HttpResponse<JsonNode> returned = Unirest.get(url + ":" + port + "/" + base + "/" + collectionName + "/" + id)
                     .header("accept", "application/json")
@@ -211,12 +256,13 @@ public class ESDriver {
      * Return the document indexed at the {id} provided
      * Can be empty if elasticsearch didn't find the id
      *
-     * @param id of the document get by field _id on elasticsearch
+     * @param id  of the document get by field _id on elasticsearch
      * @param dto your dto transformed by Gson
      * @param <U> mapped by the dto class (dto parameter)
      * @return an optional <U>
      */
-    public <U> Optional<U> fromId(String id, Class<U> dto) {
+    public <U> Optional<U> fromId(String id, Class<U> dto)
+    {
         Optional<JSONObject> j = fromId(id);
         if (j.isPresent() && !j.get().isNull("_source"))
             return Optional.ofNullable(new Gson().fromJson(j.get().getJSONObject("_source").toString(), dto));
@@ -227,7 +273,8 @@ public class ESDriver {
      * @param query the query you want to be executed
      * @return a integer of count of all documents searched.
      */
-    public Optional<Integer> count(QueryBuilder query) {
+    public Optional<Integer> count(QueryBuilder query)
+    {
         try {
             HttpResponse<JsonNode> returned = Unirest.post(url + ":" + port + "/" + base + "/" + collectionName + "/_count")
                     .header("accept", "application/json")

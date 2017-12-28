@@ -26,7 +26,9 @@ public class Range<T extends Number> extends Query
 
     public enum Operator {
         GREATER_THAN("gt"),
-        LESSER_THAN("lt");
+        GREATER_THAN_OR_EQUAL("gte"),
+        LESSER_THAN("lt"),
+        LESSER_THAN_OR_EQUAL("lte");
 
         private String operator;
 

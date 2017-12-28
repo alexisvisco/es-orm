@@ -26,18 +26,21 @@ public class Sort
         return this;
     }
 
-    public JSONArray getArr() {
+    public JSONArray getArr()
+    {
         return arr;
     }
 
-    public enum SORT_TYPE {
+    public enum SORT_TYPE
+    {
 
         ASC("asc"), // 1 2 3
         DESC("desc"); // 3 2 1
 
         private String sort;
 
-        SORT_TYPE(String sort) {
+        SORT_TYPE(String sort)
+        {
             this.sort = sort;
         }
     }

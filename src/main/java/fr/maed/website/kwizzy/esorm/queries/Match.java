@@ -15,6 +15,11 @@ public class Match extends Query
         obj.getJSONObject("match").put(field, value);
     }
 
+    public Match(String field, Object value)
+    {
+        obj.getJSONObject("match").put(field, value);
+    }
+
     public Match setBoost(double value)
     {
         obj.getJSONObject("match").put("boost", value);
