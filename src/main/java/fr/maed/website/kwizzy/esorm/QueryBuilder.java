@@ -17,10 +17,8 @@ public class QueryBuilder
     public QueryBuilder()
     {
         this.mainBool = new Bool();
-        JSONObject bool = json
-                .put("query", new JSONObject())
-                .getJSONObject("query")
-                .put("bool", mainBool.toJson());
+        json.put("query", new JSONObject().put("bool", mainBool.getBool()));
+
     }
 
     protected QueryBuilder(boolean b)
