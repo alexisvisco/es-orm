@@ -1,6 +1,5 @@
 package fr.maed.website.kwizzy.esorm;
 
-import com.sun.org.apache.xpath.internal.operations.Mult;
 import fr.maed.website.kwizzy.esorm.util.MultiGetFormat;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -8,7 +7,6 @@ import org.json.JSONObject;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -51,6 +49,24 @@ public class QueryMoreLikeThis extends QueryBuilder
     public QueryMoreLikeThis maxQueryTerms(int value)
     {
         getJson().getJSONObject("query").getJSONObject("more_like_this").put("max_query_terms", value);
+        return this;
+    }
+
+    public QueryMoreLikeThis minDocFreq(int value)
+    {
+        getJson().getJSONObject("query").getJSONObject("more_like_this").put("min_doc_freq", value);
+        return this;
+    }
+
+    public QueryMoreLikeThis maxDocFreq(int value)
+    {
+        getJson().getJSONObject("query").getJSONObject("more_like_this").put("max_doc_freq", value);
+        return this;
+    }
+
+    public QueryMoreLikeThis minShouldMatch(int value)
+    {
+        getJson().getJSONObject("query").getJSONObject("more_like_this").put("minimum_should_match", value);
         return this;
     }
 }
