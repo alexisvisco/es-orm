@@ -69,4 +69,17 @@ public class QueryMoreLikeThis extends QueryBuilder
         getJson().getJSONObject("query").getJSONObject("more_like_this").put("minimum_should_match", value);
         return this;
     }
+
+    public QueryMoreLikeThis setFrom(int from)
+    {
+        getJson().put("from", from);
+        return this;
+    }
+
+    public QueryMoreLikeThis setSize(int size)
+    {
+        getJson().put("size", size);
+        return this;
+    }
+    
 }
