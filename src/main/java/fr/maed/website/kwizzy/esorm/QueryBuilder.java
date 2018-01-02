@@ -73,4 +73,16 @@ public class QueryBuilder
         this.json = json;
         return this;
     }
+
+    public QueryBuilder setFrom(int from)
+    {
+        getJson().put("from", from);
+        return this;
+    }
+
+    public QueryBuilder setSize(int size)
+    {
+        getJson().put("size", size);
+        return this;
+    }
 }

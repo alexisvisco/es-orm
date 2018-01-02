@@ -81,5 +81,5 @@ public class QueryMoreLikeThis extends QueryBuilder
         getJson().put("size", size);
         return this;
     }
-    
+
 }
