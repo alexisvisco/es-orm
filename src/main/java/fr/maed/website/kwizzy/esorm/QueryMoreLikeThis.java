@@ -24,7 +24,6 @@ public class QueryMoreLikeThis extends QueryBuilder
     public QueryMoreLikeThis(List<String> ids, String database, String collection, String... fields)
     {
         this(ids.stream().map(e -> new MultiGetFormat(database, collection, e).toJson()).collect(Collectors.toSet()), fields);
-
     }
 
     public QueryMoreLikeThis(Collection<JSONObject> datas, String... fields)

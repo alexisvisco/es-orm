@@ -12,13 +12,11 @@ import org.json.JSONObject;
 public class QueryBuilder
 {
     private JSONObject json = new JSONObject();
-    private Bool mainBool;
+    protected Bool mainBool = new Bool();
 
     public QueryBuilder()
     {
-        this.mainBool = new Bool();
         json.put("query", new JSONObject().put("bool", mainBool.getBool()));
-
     }
 
     protected QueryBuilder(boolean b)
