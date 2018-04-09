@@ -25,7 +25,8 @@ public abstract class Query
         return obj;
     }
 
-    public JSONArray toJsonArr() {
+    public JSONArray toJsonArr()
+    {
         return arr;
     }
 }
