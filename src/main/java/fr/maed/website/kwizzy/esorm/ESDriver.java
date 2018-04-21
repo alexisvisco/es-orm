@@ -180,6 +180,28 @@ public class ESDriver
         }
     }
 
+    public Optional<JSONObject> searchInBase(String field, String value)
+    {
+        try {
+            HttpResponse<JsonNode> returned = Unirest.get(url + ":" + port + "/" + base + "/_search?q=" + field + ":" + value).asJson();
+            return Optional.ofNullable(returned.getBody().getObject());
+        } catch (UnirestException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    public Optional<JSONObject> searchInCollection(String field, String value)
+    {
+        try {
+            HttpResponse<JsonNode> returned = Unirest.get(url + ":" + port + "/" + base + "/" + collectionName + "/_search?q=" + field + ":" + value).asJson();
+            return Optional.ofNullable(returned.getBody().getObject());
+        } catch (UnirestException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
     public Optional<JSONObject> deleteQuery(QueryBuilder query)
     {
         try {
