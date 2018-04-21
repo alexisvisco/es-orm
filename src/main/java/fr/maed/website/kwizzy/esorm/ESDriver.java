@@ -263,6 +263,21 @@ public class ESDriver
         return searchToEsDto(query).stream().map(e -> e.getSource(dto)).collect(Collectors.toList());
     }
 
+    /**
+     * Transform a list of elastictdto into a list of <U>
+     *
+     * @param field
+     * @param value
+     * @param onlyInCollection
+     * @param dto   your dto to be transformed by gson thanks to the getSource method in elasticdto
+     * @param <U>   mapped by the dto class (dto parameter)
+     * @return a list of <U> dto.
+     */
+    public <U> List<U> searchToDtos(String field, String value, boolean onlyInCollection, Class<U> dto)
+    {
+        return searchToEsDto(field, value, onlyInCollection).stream().map(e -> e.getSource(dto)).collect(Collectors.toList());
+    }
+
 
     /**
      * Get a list of dto that match with the query
