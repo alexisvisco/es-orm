@@ -180,7 +180,7 @@ public class ESDriver
         }
     }
 
-    public Optional<JSONObject> searchInBase(String field, String value)
+    private Optional<JSONObject> searchInBase(String field, String value)
     {
         try {
             HttpResponse<JsonNode> returned = Unirest.get(url + ":" + port + "/" + base + "/_search?q=" + field + ":" + value).asJson();
@@ -191,7 +191,7 @@ public class ESDriver
         }
     }
 
-    public Optional<JSONObject> searchInCollection(String field, String value)
+    private Optional<JSONObject> searchInCollection(String field, String value)
     {
         try {
             HttpResponse<JsonNode> returned = Unirest.get(url + ":" + port + "/" + base + "/" + collectionName + "/_search?q=" + field + ":" + value).asJson();
@@ -217,7 +217,6 @@ public class ESDriver
         }
     }
 
-
     /**
      * Return the result from elasticsearch request in a list of ElasticDto object
      *
@@ -231,6 +230,25 @@ public class ESDriver
             return getListFromSearch(j.get());
         return new ArrayList<>();
     }
+
+    /**
+     * Return the result from elasticsearch request in a list of ElasticDto object
+     *
+     * @param String field and string value
+     * @return a list of ElasticDto
+     */
+    public List<ElasticDto> searchToEsDto(String field, String value, boolean onlyInCollection)
+    {
+        Optional<JSONObject> j;
+        if (onlyInCollection)
+            j = searchInCollection(field, value);
+        else
+            j = searchInBase(field, value);
+        if (j.isPresent() && j.get().has("hits"))
+            return getListFromSearch(j.get());
+        return new ArrayList<>();
+    }
+
 
     /**
      * Transform a list of elastictdto into a list of <U>
