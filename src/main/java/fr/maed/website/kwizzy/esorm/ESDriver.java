@@ -122,6 +122,25 @@ public class ESDriver
     }
 
     /**
+     * Add to {base}/{document}/{id} the dto, in gson format by new Gson().toJson({dto}).
+     *
+     * @param document a dto to add.
+     */
+    public Optional<JSONObject> addDocument(Object document, String id)
+    {
+        try {
+            return Optional.ofNullable(Unirest.post(url + ":" + port + "/" + base + "/" + collectionName + "/" + id)
+                    .header("accept", "application/json")
+                    .header("Content-Type", "application/json")
+                    .body(new Gson().toJson(document))
+                    .asJson().getBody().getObject());
+        } catch (UnirestException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    /**
      * Delete to {base}/{document}/_delete with the id, the id is _id of esOffers.
      *
      * @param id of the document to delete.

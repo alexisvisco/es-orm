@@ -14,7 +14,6 @@ public abstract class Query
 
     public Query()
     {
-        this.obj = obj;
         init();
     }
 
@@ -28,5 +27,9 @@ public abstract class Query
     public JSONArray toJsonArr()
     {
         return arr;
+    }
+
+    public void setParam(String key, Object value) {
+        obj.put(key, value);
     }
 }
