@@ -21,10 +21,10 @@ public class Mapping extends JSONObject {
      * @param parameters optional parameters.
      * @return this.
      */
-    public Mapping setType(String field, Type type, Consumer<JSONObject>... parameters) {
+    public Mapping setType(String field, Type type, Consumer<Parameter>... parameters) {
         JSONObject fieldProperty = new JSONObject();
         fieldProperty.put("type", type.value);
-        Arrays.stream(parameters).forEach(e -> e.accept(fieldProperty));
+        Arrays.stream(parameters).forEach(e -> e.accept(new Parameter(fieldProperty)));
         properties.put(field, fieldProperty);
         return this;
     }
