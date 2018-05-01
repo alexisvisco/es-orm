@@ -5,12 +5,12 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import fr.maed.website.kwizzy.esorm.mapping.Mapping;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -31,26 +31,15 @@ public class ESDriver
         this.url = url;
         this.base = base;
         this.collectionName = collectionName;
-        updateIndex();
     }
 
-    public ESDriver(int port, String url, String base, String collectionName, boolean index)
+    public ESDriver(int port, String url, String base, String collectionName, Mapping mapping)
     {
         this.port = port;
         this.url = url;
         this.base = base;
         this.collectionName = collectionName;
-        if (index)
-            updateIndex();
-    }
-
-    public ESDriver(int port, String url, String base, String collectionName, Consumer<ESDriver> updateIndexFn)
-    {
-        this.port = port;
-        this.url = url;
-        this.base = base;
-        this.collectionName = collectionName;
-        updateIndexFn.accept(this);
+        this.updateMapping(mapping);
     }
 
     public int getPort()
@@ -74,27 +63,15 @@ public class ESDriver
     }
 
     /**
-     * Update index by adding location propriety to geo_point.
+     * Update mapping.
      */
-    private void updateIndex()
+    private void updateMapping(Mapping mapping)
     {
         try {
             HttpResponse<JsonNode> accept = Unirest.put(url + ":" + port + "/" + base)
                     .header("accept", "application/json")
                     .header("Content-Type", "application/json")
-                    .body("{\n" +
-                                  "  \"mappings\":\n" +
-                                  "  {\n" +
-                                  "    \"" + collectionName + "\":\n" +
-                                  "    {\n" +
-                                  "      \"properties\":\n" +
-                                  "      {\n" +
-                                  "        \"location\": { \"type\":\"geo_point\" },\n" +
-                                  "        \"opened\" : {\"type\": \"date\", \"format\": \"epoch_millis\"}\n" +
-                                  "      }\n" +
-                                  "    }\n" +
-                                  "  }\n" +
-                                  "}")
+                    .body(mapping.toString())
                     .asJson();
 
         } catch (UnirestException e) {
