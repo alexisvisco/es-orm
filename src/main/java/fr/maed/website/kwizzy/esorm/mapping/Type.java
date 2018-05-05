@@ -2,6 +2,7 @@ package fr.maed.website.kwizzy.esorm.mapping;
 
 public enum Type {
         TEXT("text"),
+        STRING("string"),
         KEYWORD("keyword"),
         LONG("long"),
         INT("integer"),

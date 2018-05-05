@@ -17,24 +17,21 @@ import java.util.stream.Collectors;
  * Created by alexis on 25/10/17.
  * French author.
  */
-public class ESDriver
-{
+public class ESDriver {
 
     private int port;
     private String url;
     private String base;
     private String collectionName;
 
-    public ESDriver(int port, String url, String base, String collectionName)
-    {
+    public ESDriver(int port, String url, String base, String collectionName) {
         this.port = port;
         this.url = url;
         this.base = base;
         this.collectionName = collectionName;
     }
 
-    public ESDriver(int port, String url, String base, String collectionName, Mapping mapping)
-    {
+    public ESDriver(int port, String url, String base, String collectionName, Mapping mapping) {
         this.port = port;
         this.url = url;
         this.base = base;
@@ -42,38 +39,32 @@ public class ESDriver
         this.updateMapping(mapping);
     }
 
-    public int getPort()
-    {
+    public int getPort() {
         return port;
     }
 
-    public String getUrl()
-    {
+    public String getUrl() {
         return url;
     }
 
-    public String getBase()
-    {
+    public String getBase() {
         return base;
     }
 
-    public String getCollectionName()
-    {
+    public String getCollectionName() {
         return collectionName;
     }
 
     /**
      * Update mapping.
      */
-    private void updateMapping(Mapping mapping)
-    {
+    private void updateMapping(Mapping mapping) {
         try {
-            HttpResponse<JsonNode> accept = Unirest.put(url + ":" + port + "/" + base)
+            Unirest.put(url + ":" + port + "/" + base)
                     .header("accept", "application/json")
                     .header("Content-Type", "application/json")
                     .body(mapping.toString())
                     .asJson();
-
         } catch (UnirestException e) {
             e.printStackTrace();
         }
@@ -84,8 +75,7 @@ public class ESDriver
      *
      * @param document a dto to add.
      */
-    public Optional<JSONObject> addDocument(Object document)
-    {
+    public Optional<JSONObject> addDocument(Object document) {
         try {
             return Optional.ofNullable(Unirest.post(url + ":" + port + "/" + base + "/" + collectionName)
                                                .header("accept", "application/json")
@@ -103,14 +93,13 @@ public class ESDriver
      *
      * @param document a dto to add.
      */
-    public Optional<JSONObject> addDocument(Object document, String id)
-    {
+    public Optional<JSONObject> addDocument(Object document, String id) {
         try {
             return Optional.ofNullable(Unirest.post(url + ":" + port + "/" + base + "/" + collectionName + "/" + id)
-                    .header("accept", "application/json")
-                    .header("Content-Type", "application/json")
-                    .body(new Gson().toJson(document))
-                    .asJson().getBody().getObject());
+                                               .header("accept", "application/json")
+                                               .header("Content-Type", "application/json")
+                                               .body(new Gson().toJson(document))
+                                               .asJson().getBody().getObject());
         } catch (UnirestException e) {
             e.printStackTrace();
             return Optional.empty();
@@ -122,8 +111,7 @@ public class ESDriver
      *
      * @param id of the document to delete.
      */
-    public Optional<JSONObject> deleteDocument(String id)
-    {
+    public Optional<JSONObject> deleteDocument(String id) {
         try {
             return Optional.ofNullable(Unirest.delete(url + ":" + port + "/" + base + "/" + collectionName + "/" + id)
                                                .header("accept", "application/json")
@@ -140,8 +128,7 @@ public class ESDriver
      *
      * @param document
      */
-    public Optional<JSONObject> updateDocument(Object document, String id)
-    {
+    public Optional<JSONObject> updateDocument(Object document, String id) {
         try {
             return Optional.ofNullable(Unirest.post(url + ":" + port + "/" + base + "/" + collectionName + "/" + id + "/_update")
                                                .header("accept", "application/json")
@@ -161,8 +148,7 @@ public class ESDriver
      * @param query query builder
      * @return full json query returned by elasticsearch.
      */
-    public Optional<JSONObject> search(QueryBuilder query)
-    {
+    public Optional<JSONObject> search(QueryBuilder query) {
         try {
             HttpResponse<JsonNode> returned = Unirest.post(url + ":" + port + "/" + base + "/" + collectionName + "/_search")
                     .header("accept", "application/json")
@@ -176,8 +162,7 @@ public class ESDriver
         }
     }
 
-    private Optional<JSONObject> searchInBase(String field, String value)
-    {
+    private Optional<JSONObject> searchInBase(String field, String value) {
         try {
             HttpResponse<JsonNode> returned = Unirest.get(url + ":" + port + "/" + base + "/_search?q=" + field + ":" + value).asJson();
             return Optional.ofNullable(returned.getBody().getObject());
@@ -187,8 +172,7 @@ public class ESDriver
         }
     }
 
-    private Optional<JSONObject> searchInCollection(String field, String value)
-    {
+    private Optional<JSONObject> searchInCollection(String field, String value) {
         try {
             HttpResponse<JsonNode> returned = Unirest.get(url + ":" + port + "/" + base + "/" + collectionName + "/_search?q=" + field + ":" + value).asJson();
             return Optional.ofNullable(returned.getBody().getObject());
@@ -198,8 +182,7 @@ public class ESDriver
         }
     }
 
-    public Optional<JSONObject> deleteQuery(QueryBuilder query)
-    {
+    public Optional<JSONObject> deleteQuery(QueryBuilder query) {
         try {
             HttpResponse<JsonNode> returned = Unirest.post(url + ":" + port + "/" + base + "/" + collectionName + "/_delete_by_query")
                     .header("accept", "application/json")
@@ -219,8 +202,7 @@ public class ESDriver
      * @param query from QueryBuilder class
      * @return a list of ElasticDto
      */
-    public List<ElasticDto> searchToEsDto(QueryBuilder query)
-    {
+    public List<ElasticDto> searchToEsDto(QueryBuilder query) {
         Optional<JSONObject> j = search(query);
         if (j.isPresent() && j.get().has("hits"))
             return getListFromSearch(j.get());
@@ -230,11 +212,10 @@ public class ESDriver
     /**
      * Return the result from elasticsearch request in a list of ElasticDto object
      *
-     * @param String field and string value
+     * @param field and string value
      * @return a list of ElasticDto
      */
-    public List<ElasticDto> searchToEsDto(String field, String value, boolean onlyInCollection)
-    {
+    public List<ElasticDto> searchToEsDto(String field, String value, boolean onlyInCollection) {
         Optional<JSONObject> j;
         if (onlyInCollection)
             j = searchInCollection(field, value);
@@ -254,8 +235,7 @@ public class ESDriver
      * @param <U>   mapped by the dto class (dto parameter)
      * @return a list of <U> dto.
      */
-    public <U> List<U> searchToDtos(QueryBuilder query, Class<U> dto)
-    {
+    public <U> List<U> searchToDtos(QueryBuilder query, Class<U> dto) {
         return searchToEsDto(query).stream().map(e -> e.getSource(dto)).collect(Collectors.toList());
     }
 
@@ -265,12 +245,11 @@ public class ESDriver
      * @param field
      * @param value
      * @param onlyInCollection
-     * @param dto   your dto to be transformed by gson thanks to the getSource method in elasticdto
-     * @param <U>   mapped by the dto class (dto parameter)
+     * @param dto              your dto to be transformed by gson thanks to the getSource method in elasticdto
+     * @param <U>              mapped by the dto class (dto parameter)
      * @return a list of <U> dto.
      */
-    public <U> List<U> searchToDtos(String field, String value, boolean onlyInCollection, Class<U> dto)
-    {
+    public <U> List<U> searchToDtos(String field, String value, boolean onlyInCollection, Class<U> dto) {
         return searchToEsDto(field, value, onlyInCollection).stream().map(e -> e.getSource(dto)).collect(Collectors.toList());
     }
 
@@ -281,8 +260,7 @@ public class ESDriver
      * @param fromExecutedQuery from query builder
      * @return a list of dto
      */
-    private List<ElasticDto> getListFromSearch(JSONObject fromExecutedQuery)
-    {
+    private List<ElasticDto> getListFromSearch(JSONObject fromExecutedQuery) {
         Gson gson = new Gson();
         JSONObject hits = fromExecutedQuery.getJSONObject("hits");
         if (hits.getInt("total") > 0) {
@@ -309,8 +287,7 @@ public class ESDriver
      * @param id of the document get by field _id on elasticsearch
      * @return json returned by elasticsearch.
      */
-    public Optional<JSONObject> fromId(String id)
-    {
+    public Optional<JSONObject> fromId(String id) {
         try {
             HttpResponse<JsonNode> returned = Unirest.get(url + ":" + port + "/" + base + "/" + collectionName + "/" + id)
                     .header("accept", "application/json")
@@ -332,8 +309,7 @@ public class ESDriver
      * @param <U> mapped by the dto class (dto parameter)
      * @return an optional <U>
      */
-    public <U> Optional<U> fromId(String id, Class<U> dto)
-    {
+    public <U> Optional<U> fromId(String id, Class<U> dto) {
         Optional<JSONObject> j = fromId(id);
         if (j.isPresent() && !j.get().isNull("_source"))
             return Optional.ofNullable(new Gson().fromJson(j.get().getJSONObject("_source").toString(), dto));
@@ -344,8 +320,7 @@ public class ESDriver
      * @param query the query you want to be executed
      * @return a integer of count of all documents searched.
      */
-    public int count(QueryBuilder query)
-    {
+    public int count(QueryBuilder query) {
         try {
             HttpResponse<JsonNode> returned = Unirest.post(url + ":" + port + "/" + base + "/" + collectionName + "/_count")
                     .header("accept", "application/json")
@@ -359,8 +334,7 @@ public class ESDriver
         }
     }
 
-    public void clearAllDocuments()
-    {
+    public void clearAllDocuments() {
         try {
             HttpResponse<JsonNode> response = Unirest.delete(url + ":" + port + "/" + base + "/").asJson();
         } catch (UnirestException e) {
@@ -368,8 +342,7 @@ public class ESDriver
         }
     }
 
-    public void addAll(List<Object> objects)
-    {
+    public void addAll(List<Object> objects) {
         objects.forEach(object -> this.addDocument(object));
     }
 }

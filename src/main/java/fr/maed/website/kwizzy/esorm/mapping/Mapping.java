@@ -10,7 +10,7 @@ public class Mapping extends JSONObject {
     private JSONObject properties = new JSONObject();
 
     public Mapping(String collection) {
-        put("mappings", new JSONObject().put(collection, properties));
+        put("mappings", new JSONObject().put(collection, new JSONObject().put("properties", properties)));
     }
 
     /**
